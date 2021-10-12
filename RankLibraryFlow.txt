@@ -1,0 +1,144 @@
+Ranking CONTRACT
+----------------------------------------------------
+Map<Int, Ranking> rankingMap
+
+function add(int category, int key, int value) {
+	Ranking ranking = rankingMap.get(category);
+	
+	if (ranking == null) {
+		ranking = new Ranking();
+		rankingMap.put(category, ranking);
+	}
+	
+	ranking.put(key, value);
+}
+
+function remove(int category, int key, int value) {
+	Ranking ranking = rankingMap.get(category);
+	
+	if (ranking == null) {
+		return;
+	}
+	
+	ranking.remove(key, value);
+}
+
+function get(int category, int offset, int count) {
+	Ranking ranking = rankingMap.get(category);
+	
+	if (ranking == null) {
+		return [];
+	}
+	
+	return ranking.get(offset, count);
+}
+----------------------------------------------------
+
+
+
+Ranking
+----------------------------------------------------
+Tree tree;
+Map<Int, FastArrayVariables> map;
+
+
+function add(int key, int value) {
+	value = value + 1;
+	
+	FastArrayVariables array = map.get(value);
+	
+	if (array == null) {
+		array = FastArrayVariables();
+		
+		tree.insert(value);
+		map.insert(value, array);
+	}
+	
+	FastArray.add(array, key);
+}
+
+function remove(int key, int value) {
+	value = value + 1;
+	FastArray array = map.get(value);
+	
+	if (array == null) {
+		return;
+	}
+	
+	array.remove(key);
+	
+	if (array.isEmpty()) {
+		tree.remove(value);
+	}
+}
+
+function get(int offset, int count): int[] {
+	require(0 < count <= 20, "kheili khari");
+	
+	int[] result = [];
+	
+	int value = tree.getMax();
+	
+	while (offset + count > 0 && value > 0) {
+		FastArray array = map.get(value);
+		
+		if (offset >= array.length) {
+			offset -= array.length;
+		}
+		else if (array.length < offset + count) {
+			for (int i = array.length - 1; i >= offset; i--) {
+				int key = array.get(i);
+				
+				if (key != 0) {
+					result[] = key;
+				}
+			}
+			
+			count -= array.length - offset;
+			offset = 0;
+		}
+		else {
+			for (int i = count - 1; i >= offset; i--) {
+				int key = array.get(i);
+				
+				if (key != 0) {
+					result[] = key;
+				}
+			}
+			count = 0;
+			offset = 0;
+		}
+		
+		value = tree.previous(value);
+	}
+	
+	return result;
+}
+----------------------------------------------------
+
+
+
+Fast Array
+----------------------------------------------------
+struct FastArrayVariables {
+	int[] array;
+	Map<Int, Int> indexMap;
+}
+
+function insert(FastArrayVariables variables, int key) {
+	variables.array[] = key;
+	variables.indexMap.put(key, length);
+}
+
+function remove(int key) {
+	int index = indexMap.get(key);
+	
+	array[index] = 0;
+	indexMap.remove(key);
+}
+
+function get(int index) {
+	return array[index];
+}
+
+----------------------------------------------------
