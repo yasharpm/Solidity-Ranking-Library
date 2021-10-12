@@ -10,12 +10,16 @@ library Ranking {
 		mapping(uint => SingleRanking.Data) rankings;
 	}
 	
-	function add(Data storage _rankings, uint _category, uint _key, uint _value) public {
+	function add(Data storage _rankings, uint _category, uint _key, uint _value) internal {
 		SingleRanking.add(_rankings.rankings[_category], _key, _value);
 	}
 	
-	function remove(Data storage _rankings, uint _category, uint _key, uint _value) public {
+	function remove(Data storage _rankings, uint _category, uint _key, uint _value) internal {
 		SingleRanking.remove(_rankings.rankings[_category], _key, _value);
+	}
+	
+	function length(Data storage _rankings, uint _category) public view returns (uint) {
+		return SingleRanking.length(_rankings.rankings[_category]);
 	}
 	
 	function get(Data storage _rankings, uint _category, uint _offset, uint _count) public view returns (uint[] memory) {

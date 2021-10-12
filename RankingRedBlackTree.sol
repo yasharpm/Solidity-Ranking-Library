@@ -1,5 +1,12 @@
 pragma solidity ^0.6.0;
 
+// A red-black tree that holds a "count" variable next to the value in the tree.
+// This library is used to resolve which values should be skipped to respect the _offset when querying from the rank library.
+// The focal function is "lastByOffset" which starts from the largest value in the tree and traverses backwards to find the
+// first value that is included in the offset specified and returns it.
+// The nodes are accessed by a key and other properties can be queried using the key.
+// This library is a modification of BokkyPooBah's Red-Black Tree Library which has a MIT licence.
+// Following is the original description and the license:
 // ----------------------------------------------------------------------------
 // BokkyPooBah's Red-Black Tree Library v1.0-pre-release-a
 //
@@ -11,6 +18,30 @@ pragma solidity ^0.6.0;
 //
 //
 // Enjoy. (c) BokkyPooBah / Bok Consulting Pty Ltd 2020. The MIT Licence.
+// ----------------------------------------------------------------------------
+// Here is the license attached to this library:
+// ----------------------------------------------------------------------------
+// MIT License
+// 
+// Copyright (c) 2018 The Officious BokkyPooBah
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
 // ----------------------------------------------------------------------------
 library RankingRedBlackTree {
 
@@ -33,7 +64,7 @@ library RankingRedBlackTree {
 
     uint private constant EMPTY = 0;
 
-    function first(Tree storage self) internal view returns (uint _key) {
+    function first(Tree storage self) public view returns (uint _key) {
         _key = self.root;
         if (_key != EMPTY) {
             while (self.nodes[_key].left != EMPTY) {
@@ -41,7 +72,7 @@ library RankingRedBlackTree {
             }
         }
     }
-    function last(Tree storage self) internal view returns (uint _key) {
+    function last(Tree storage self) public view returns (uint _key) {
         _key = self.root;
         if (_key != EMPTY) {
             while (self.nodes[_key].right != EMPTY) {
@@ -49,7 +80,7 @@ library RankingRedBlackTree {
             }
         }
     }
-	function lastByOffset(Tree storage self, uint _offset) internal view returns (uint, uint) {
+	function lastByOffset(Tree storage self, uint _offset) public view returns (uint, uint) {
 		uint key = last(self);
 		
 		while (key != EMPTY && _offset > self.nodes[key].count) {
@@ -59,7 +90,7 @@ library RankingRedBlackTree {
 		
 		return (key, _offset);
 	}
-    function next(Tree storage self, uint target) internal view returns (uint cursor) {
+    function next(Tree storage self, uint target) public view returns (uint cursor) {
         require(target != EMPTY);
         if (self.nodes[target].right != EMPTY) {
             cursor = treeMinimum(self, self.nodes[target].right);
@@ -71,7 +102,7 @@ library RankingRedBlackTree {
             }
         }
     }
-    function prev(Tree storage self, uint target) internal view returns (uint cursor) {
+    function prev(Tree storage self, uint target) public view returns (uint cursor) {
         require(target != EMPTY);
         if (self.nodes[target].left != EMPTY) {
             cursor = treeMaximum(self, self.nodes[target].left);
@@ -83,7 +114,7 @@ library RankingRedBlackTree {
             }
         }
     }
-	function find(Tree storage self, uint _value) internal view returns (uint) {
+	function find(Tree storage self, uint _value) public view returns (uint) {
         uint probe = self.root;
         while (probe != EMPTY) {
 			if (_value == self.nodes[probe].value) {
@@ -97,7 +128,7 @@ library RankingRedBlackTree {
         }
 		return EMPTY;
 	}
-	function value(Tree storage self, uint _key) internal view returns (uint) {
+	function value(Tree storage self, uint _key) public view returns (uint) {
 	    return self.nodes[_key].value;
 	}
 	function addToCount(Tree storage self, uint _value, uint amount) internal {

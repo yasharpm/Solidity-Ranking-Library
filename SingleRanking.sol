@@ -10,11 +10,10 @@ library SingleRanking {
 	struct Data {
 		RankingRedBlackTree.Tree tree;
 		mapping(uint => FastArray.Data ) keys;
+		uint length;
 	}
 	
-	function add(Data storage _singleRanking, uint _key, uint _value) public {
-		_value += 1;
-		
+	function add(Data storage _singleRanking, uint _key, uint _value) internal {
 		FastArray.Data storage keys = _singleRanking.keys[_value];
 		
 		if (FastArray.length(keys) == 0) {
@@ -25,11 +24,11 @@ library SingleRanking {
 		}
 		
 		FastArray.insert(_singleRanking.keys[_value], _key);
+		
+		_singleRanking.length += 1;
 	}
 	
-	function remove(Data storage _singleRanking, uint _key, uint _value) public {
-		_value += 1;
-		
+	function remove(Data storage _singleRanking, uint _key, uint _value) internal {
 		FastArray.Data storage keys = _singleRanking.keys[_value];
 		
 		if (FastArray.length(keys) > 0) {
@@ -42,6 +41,12 @@ library SingleRanking {
 				RankingRedBlackTree.minusFromCount(_singleRanking.tree, _value, 1);
 			}
 		}
+		
+		_singleRanking.length -= 1;
+	}
+	
+	function length(Data storage _singleRanking) public view returns (uint) {
+		return _singleRanking.length;
 	}
 	
 	function get(Data storage _singleRanking, uint _offset, uint _count) public view returns (uint[] memory) {
@@ -66,10 +71,8 @@ library SingleRanking {
 				while (index >= _offset) {
 					uint key = FastArray.get(keys, index);
 					
-					if (key != 0) {
-						result[size] = key;
-						size += 1;
-					}
+					result[size] = key;
+					size += 1;
 				
 				    if (index == 0) {
 				        break;
@@ -87,10 +90,8 @@ library SingleRanking {
 				while (index >= _offset) {
 					uint key = FastArray.get(keys, index);
 					
-					if (key != 0) {
-						result[size] = key;
-						size += 1;
-					}
+					result[size] = key;
+					size += 1;
 					
 					if (index == 0) {
 					    break;

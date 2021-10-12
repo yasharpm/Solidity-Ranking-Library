@@ -2,8 +2,9 @@
 
 pragma solidity ^0.6.0;
 
-// An array that is supposed to hold unique values. The purpose is optimization on gas use.
-// The length is always incremental. 
+// A simple array that supports insert and removal.
+// The values are assumed to be unique and the library is meant to be lightweight.
+// So when calling insert or remove, the caller is responsible to know whether a value already exists in the array or not.
 library FastArray {
 
 	struct Data {
@@ -12,13 +13,13 @@ library FastArray {
 		uint length;
 	}
 
-	function insert(Data storage _fastArray, uint _value) public {
+	function insert(Data storage _fastArray, uint _value) internal {
 	    _fastArray.array[_fastArray.length] = _value;
 		_fastArray.indexMap[_value] = _fastArray.length;
 		_fastArray.length += 1;
 	}
 	
-	function remove(Data storage _fastArray, uint _value) public {
+	function remove(Data storage _fastArray, uint _value) internal {
 		uint index = _fastArray.indexMap[_value];
 		_fastArray.array[index] = _fastArray.array[_fastArray.length - 1];
 		delete _fastArray.indexMap[_value];
