@@ -27,4 +27,4 @@ Check `RankingTest.sol` for sample code using the library.
 
 ### Disclaimer
 
-This library has the https://unlicense.org/ license. But is using BokkyPooBahs Red-Black Binary Search Tree Library which has a MIT license. The license for that file is included within the library file.
+This library has the https://unlicense.org/ license. But is using [BokkyPooBahs Red-Black Binary Search Tree Library](https://github.com/bokkypoobah/BokkyPooBahsRedBlackTreeLibrary) which has a MIT license. The license for that file is included within the library file.
