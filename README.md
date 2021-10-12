@@ -23,3 +23,8 @@ Check `RankingTest.sol` for sample code using the library.
 - **get** Inputs are `category`, `offset` and `count`. Returns the top `count` members identifiers for the designated category skipping the first `offset` members. Offset can be any non-negative value. Count should at most be 40. If there are less members than requested, the returned array is padded with zero values. Hence it is strongly recommended to avoid using zero as a member identifier.
 - **length** Input is the `category`. Returns the total number of members that exist in this ranking list.
 
+
+
+### Disclaimer
+
+This library has the https://unlicense.org/ license. But is using BokkyPooBahs Red-Black Binary Search Tree Library which has a MIT license. The license for that file is included within the library file.
